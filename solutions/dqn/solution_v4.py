@@ -320,7 +320,7 @@ class RL(CongestionControl):
             self.result_list = []
             self.priority_list = []
             self.left_time_list = []
-            self.priority_list = []
+            self.left_num_list = []
             self.state_episode = []
 
         # Reno
