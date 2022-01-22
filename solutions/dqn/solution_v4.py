@@ -275,7 +275,7 @@ class RL(CongestionControl):
                         r += 1
                     r += self.send_rate / MAX_BANDWITH
                 else:
-                    r -= abs(self.priority_list[i] * self.alpha * self.left_time_list[i]) + self.send_rate / MAX_BANDWITH
+                    r -= abs(self.priority_list[i] * self.alpha * self.left_time_list[i])
 
 
             # current status
@@ -324,60 +324,60 @@ class RL(CongestionControl):
             self.state_episode = []
 
         # Reno
-        if self.cur_time < event_time:
-            # initial parameters at a new moment
-            self.last_cwnd = 0
-            self.instant_drop_nums = 0
-
-        # if packet is dropped
-        if event_type == EVENT_TYPE_DROP:
-            # dropping more than one packet at a same time is considered one event of packet loss
-            if self.instant_drop_nums > 0:
-                return
-            self.instant_drop_nums += 1
-            # step into fast recovery state
-            self.curr_state = self.states[2]
-            self.drop_nums += 1
-            # clear acknowledgement count
-            self.ack_nums = 0
-            # Ref 1 : For ensuring the event type, drop or ack?
-            self.cur_time = event_time
-            if self.last_cwnd > 0 and self.last_cwnd != self.cwnd:
-                # rollback to the old value of cwnd caused by acknowledgment first
-                self.cwnd = self.last_cwnd
-                self.last_cwnd = 0
-
-        # if packet is acknowledged
-        elif event_type == EVENT_TYPE_FINISHED:
-            self.drop_nums = 0
-            # Ref 1
-            if event_time <= self.cur_time:
-                return
-            self.cur_time = event_time
-            self.last_cwnd = self.cwnd
-
-            # increase the number of acknowledgement packets
-            self.ack_nums += 1
-            # double cwnd in slow_start state
-            if self.curr_state == self.states[0]:
-                if self.ack_nums == self.cwnd:
-                    self.cwnd *= 2
-                    self.ack_nums = 0
-                # step into congestion_avoidance state due to exceeding threshhold
-                if self.cwnd >= self.ssthresh:
-                    self.curr_state = self.states[1]
-
-            # increase cwnd linearly in congestion_avoidance state
-            elif self.curr_state == self.states[1]:
-                if self.ack_nums == self.cwnd:
-                    self.cwnd += 1
-                    self.ack_nums = 0
-
-        # reset threshhold and cwnd in fast_recovery state
-        if self.curr_state == self.states[2]:
-            self.ssthresh = max(int(self.cwnd * ((2 / 3) ** self.drop_nums)), 1)
-            self.cwnd = self.ssthresh
-            self.curr_state = self.states[1]
+        # if self.cur_time < event_time:
+        #     # initial parameters at a new moment
+        #     self.last_cwnd = 0
+        #     self.instant_drop_nums = 0
+        #
+        # # if packet is dropped
+        # if event_type == EVENT_TYPE_DROP:
+        #     # dropping more than one packet at a same time is considered one event of packet loss
+        #     if self.instant_drop_nums > 0:
+        #         return
+        #     self.instant_drop_nums += 1
+        #     # step into fast recovery state
+        #     self.curr_state = self.states[2]
+        #     self.drop_nums += 1
+        #     # clear acknowledgement count
+        #     self.ack_nums = 0
+        #     # Ref 1 : For ensuring the event type, drop or ack?
+        #     self.cur_time = event_time
+        #     if self.last_cwnd > 0 and self.last_cwnd != self.cwnd:
+        #         # rollback to the old value of cwnd caused by acknowledgment first
+        #         self.cwnd = self.last_cwnd
+        #         self.last_cwnd = 0
+        #
+        # # if packet is acknowledged
+        # elif event_type == EVENT_TYPE_FINISHED:
+        #     self.drop_nums = 0
+        #     # Ref 1
+        #     if event_time <= self.cur_time:
+        #         return
+        #     self.cur_time = event_time
+        #     self.last_cwnd = self.cwnd
+        #
+        #     # increase the number of acknowledgement packets
+        #     self.ack_nums += 1
+        #     # double cwnd in slow_start state
+        #     if self.curr_state == self.states[0]:
+        #         if self.ack_nums == self.cwnd:
+        #             self.cwnd *= 2
+        #             self.ack_nums = 0
+        #         # step into congestion_avoidance state due to exceeding threshhold
+        #         if self.cwnd >= self.ssthresh:
+        #             self.curr_state = self.states[1]
+        #
+        #     # increase cwnd linearly in congestion_avoidance state
+        #     elif self.curr_state == self.states[1]:
+        #         if self.ack_nums == self.cwnd:
+        #             self.cwnd += 1
+        #             self.ack_nums = 0
+        #
+        # # reset threshhold and cwnd in fast_recovery state
+        # if self.curr_state == self.states[2]:
+        #     self.ssthresh = max(int(self.cwnd * ((2 / 3) ** self.drop_nums)), 1)
+        #     self.cwnd = self.ssthresh
+        #     self.curr_state = self.states[1]
 
 
 
