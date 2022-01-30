@@ -450,11 +450,11 @@ class MySolution(BlockSelection, RL):
                 if best_block_create_time != packet_block_create_time:
                     return best_block_create_time > packet_block_create_time
                 else:
-                    packet_ability = cur_time - packet_block_create_time + asume_time
-                    packet_ability *= block.block_info["Deadline"]
+                    packet_ability = cur_time - packet_block_create_time + asume_time + block_remain_packets / asume_rate
+                    packet_ability = block.block_info["Deadline"] - packet_ability
 
-                    best_packet_ability = cur_time - best_block_create_time + asume_time
-                    best_packet_ability *= best_block.block_info["Deadline"]
+                    best_packet_ability = cur_time - best_block_create_time + asume_time + best_block_remain_packets / asume_rate
+                    best_packet_ability = best_block.block_info["Deadline"] - packet_ability
 
                     return best_packet_ability > packet_ability
 
