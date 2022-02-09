@@ -454,7 +454,7 @@ class MySolution(BlockSelection, RL):
                     packet_ability = block.block_info["Deadline"] - packet_ability
 
                     best_packet_ability = cur_time - best_block_create_time + asume_time + best_block_remain_packets / asume_rate
-                    best_packet_ability = best_block.block_info["Deadline"] - packet_ability
+                    best_packet_ability = best_block.block_info["Deadline"] - best_packet_ability
 
                     return best_packet_ability > packet_ability
 
