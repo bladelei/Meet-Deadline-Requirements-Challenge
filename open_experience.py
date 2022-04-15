@@ -129,7 +129,7 @@ def evaluation(log_file, solution_file):
     # return res[0] / 1.5 + res[1] / 1 + res[2] / 2
     return res
 
-def get_score(solution_file, log_name):
+def get_score(solution_file, type, log_name):
     # 设置测试数据集路径
     file_name_list = []
     score_list = []
@@ -141,10 +141,10 @@ def get_score(solution_file, log_name):
                                "datasets/background_traffic_traces/live_pubg.csv",
                                "datasets/background_traffic_traces/movie_on_demand.csv",
                                "datasets/background_traffic_traces/web.csv"]
-        block_files = [str(_) for _ in pathlib.Path(BLOCK_BASE).iterdir()]
+        block_files = sorted([str(_) for _ in pathlib.Path(BLOCK_BASE).iterdir()])
         solution = importlib.import_module(solution_file)
         my_solution = solution.MySolution()
-        for trace_name in os.listdir(NETWORK_BASE):
+        for trace_name in sorted(os.listdir(NETWORK_BASE)):
             trace_file = pathlib.Path(NETWORK_BASE + trace_name)
             for background_traffic in background_traffics:
                 emulator = create_emulator(
@@ -169,7 +169,7 @@ def get_score(solution_file, log_name):
     #     print(file_name, score)
 
     # with open('running_info_log/time_delay_cwnd.csv', 'wb') as f:
-    pd.DataFrame(score_list).to_csv('running_log/DEF/{}.csv'.format(log_name))
+    pd.DataFrame(score_list).to_csv('running_log/{0}/{1}.csv'.format(type, log_name))
     # pd.DataFrame(score_list).to_csv('running_log/Hybrid/{}.csv'.format(log_name))
 
 
@@ -208,24 +208,35 @@ def get_scenaro_score(test_day, solution_file, log_name, loc):
     pd.DataFrame(score_list).to_csv(f'running_log/{loc}/{log_name}.csv')
 
 def get_file_name(key):
-    # DEF
-    DEF_NewReno = 'solutions.reno.DEF-NewReno'
-    DEF_Fast_TCP = 'solutions.Fast-TCP.DEF-Fast-TCP'
-    DEF_BBR = 'solutions.bbr.DEF-BBR'
-    DEF_DRL_CC = 'solutions.dqn.DEF-DRL-CC'
+    # EDF
+    EDF_NewReno = 'solutions.reno.EDF-NewReno'
+    EDF_Fast_TCP = 'solutions.Fast-TCP.EDF-Fast-TCP'
+    EDF_BBR = 'solutions.bbr.EDF-BBR'
+    # EDF_DRL_CC = 'solutions.dqn.EDF-DRL-CC'
+    EDF_CUBIC = 'solutions.cubic.EDF-CUBIC'
+    EDF_COPA = 'solutions.copa.EDF-COPA'
 
     #Hybrid
     DTP_Fast_TCP = 'solutions.Fast-TCP.DTP-Fast-TCP'
     HPF_BBR = 'solutions.bbr.HPF-BBR'
-    DRL_CC = 'solutions.dqn.DRL-CC'
+    DRL_TC = 'solutions.dqn.DRL-TC'
 
-    d = {DEF_NewReno: "DEF_NewReno",
-         DEF_Fast_TCP: "DEF_Fast_TCP",
-         DEF_BBR: "DEF_BBR",
-         DEF_DRL_CC: "DEF_DRL_CC",
+    #Select
+    EDF_DRL_CC = 'solutions.dqn.EDF-DRL-CC'
+    HPF_DRL_CC = 'solutions.dqn.HPF-DRL-CC'
+    DTP_DRL_CC = 'solutions.dqn.DTP-DRL-CC'
+
+    d = {EDF_NewReno: "EDF_NewReno",
+         EDF_Fast_TCP: "EDF_Fast_TCP",
+         EDF_BBR: "EDF_BBR",
+         EDF_DRL_CC: "EDF_DRL_CC",
+         EDF_CUBIC: "EDF_CUBIC",
+         EDF_COPA: 'EDF_COPA',
          DTP_Fast_TCP: "DTP_Fast_TCP",
          HPF_BBR: "HPF_BBR",
-         DRL_CC: "DRL_CC"}
+         DRL_TC: "DRL_TC",
+         HPF_DRL_CC: "HPF_DRL_CC",
+         DTP_DRL_CC: "DTP_DRL_CC"}
 
     return d[key]
 
@@ -246,24 +257,35 @@ if __name__ == "__main__":
     # import the solution
     import importlib
 
-    #DEF
-    DEF_NewReno = 'solutions.reno.DEF-NewReno'
-    DEF_Fast_TCP = 'solutions.Fast-TCP.DEF-Fast-TCP'
-    DEF_BBR = 'solutions.bbr.DEF-BBR'
-    DEF_DRL_CC = 'solutions.dqn.DEF-DRL-CC'
+    #EDF
+    EDF_NewReno = 'solutions.reno.DEF-NewReno'
+    EDF_Fast_TCP = 'solutions.Fast-TCP.DEF-Fast-TCP'
+    EDF_BBR = 'solutions.bbr.DEF-BBR'
+    EDF_DRL_CC = 'solutions.dqn.EDF-DRL-CC'
+    EDF_CUBIC = 'solutions.cubic.EDF-CUBIC'
+    EDF_COPA = 'solutions.copa.EDF-COPA'
 
-    DEF_LIST = [DEF_NewReno, DEF_Fast_TCP, DEF_BBR, DEF_DRL_CC]
+    # EDF_LIST = [EDF_NewReno, EDF_Fast_TCP, EDF_BBR, EDF_DRL_CC, EDF_CUBIC]
+    EDF_LIST = [EDF_COPA]
+
 
     # Hybrid
-    DEF_NewReno = 'solutions.reno.DEF-NewReno'
+    EDF_NewReno = 'solutions.reno.EDF-NewReno'
     DTP_Fast_TCP = 'solutions.Fast-TCP.DTP-Fast-TCP'
     HPF_BBR = 'solutions.bbr.HPF-BBR'
-    DRL_CC = 'solutions.dqn.DRL-CC'
+    DRL_TC = 'solutions.dqn.DRL-CC'
 
-    H_LIST = [DEF_NewReno, DTP_Fast_TCP, HPF_BBR, DRL_CC]
+    H_LIST = [EDF_NewReno, DTP_Fast_TCP, HPF_BBR, DRL_TC]
 
-    # get_scenarios(DEF_LIST, "D_scenario")
+    HPF_DRL_CC = 'solutions.dqn.HPF-DRL-CC'
+    DTP_DRL_CC = 'solutions.dqn.DTP-DRL-CC'
+
+    S_LIST = [DTP_DRL_CC]
+
+    get_scenarios(S_LIST, "S_scenario")
     # get_scenarios(H_LIST, "H_scenario")
+    for s in S_LIST:
+        get_score(s, 'Select', get_file_name(s))
 
 
 
@@ -280,4 +302,7 @@ if __name__ == "__main__":
     # print("最终QoE结果：{}".format(res))
 
 
-    get_score(DTP_Fast_TCP, "DTP_Fast_TCP")
+    # get_score(DTP_Fast_TCP, "DTP_Fast_TCP")
+    # get_score(EDF_CUBIC, "EDF_CUBIC")
+    # get_score(EDF_COPA, "EDF_COPA")
+

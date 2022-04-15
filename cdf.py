@@ -18,12 +18,11 @@ def all_data_draw(data_dict, save_name, day=None):
     plt.figure()
     for key in data_dict:
         res = stats.relfreq(data_dict[key], numbins=40)
-        # print("res:", res)
-
         x = res.lowerlimit + np.linspace(0, res.binsize * res.frequency.size, res.frequency.size)
         y = np.cumsum(res.frequency)
         plt.plot(x, y, linestyle="--", label=key)
     plt.xlabel('Average QoE')
+    plt.ylabel('CDF')
     if day == None:
         plt.title('All Scenarios')
     else:
@@ -72,28 +71,51 @@ def get_all_data(type):
     files = os.listdir(f"{currentdir}/running_log/{type}/")
     data_dict = {}
     for f in files:
-        data_dict[f] = read_data(f"{currentdir}/running_log/{type}/{f}")
+        data_dict[f[:-4]] = read_data(f"{currentdir}/running_log/{type}/{f}")
     return data_dict
 
 
 if __name__ == '__main__':
-    data_dict = get_all_data("Hybrid")
-    data_dict = cal_mean(data_dict)
-    print(cal_mean(data_dict))
-    for k in  data_dict:
-        print(data_dict[k])
-        print(k, (data_dict['DRL_TC.csv'] - data_dict[k]) / data_dict[k])
-    # all_data_draw(data_dict, "Hybrid.png")
-
+    # data_dict = get_all_data("EDF")
+    # all_data_draw(data_dict, "EDF.png")
+    #
+    # mean_data_dict = cal_mean(data_dict)
+    # # print(cal_mean(data_dict))
+    # for k in mean_data_dict:
+    #     # print(k)
+    #     print(k, mean_data_dict[k])
+    #     print(k, (mean_data_dict['EDF_DRL_CC'] - mean_data_dict[k]) / mean_data_dict[k])
+    # # all_data_draw(data_dict, "EDF.png")
+    #
     # for day in range(1, 4):
-    #     data_dict = get_all_data(f"D_scenario_{day}")
+    #     data_dict = get_all_data(f"E_scenario_{day}")
+    #     all_data_draw(data_dict, f"E_scenario_{day}.png", day)
     #     data_dict = cal_mean(data_dict)
     #     print(data_dict)
-    #     print((data_dict['DEF_DRL_CC.csv'] - data_dict['DEF_BBR.csv']) / data_dict['DEF_BBR.csv'])
-        # all_data_draw(data_dict, f"H_scenario_{day}.png", day)
+    #     print(day)
+    #     for k in data_dict: print(k, (data_dict['EDF_DRL_CC'] - data_dict[k]) / data_dict[k])
 
-    # scenario_data_draw('D', 'DEF-scenario-CC.png')
-    # pass
+
+    data_dict = get_all_data("Select")
+    all_data_draw(data_dict, "Select.png")
+
+    mean_data_dict = cal_mean(data_dict)
+    # print(cal_mean(data_dict))
+    for k in mean_data_dict:
+        # print(k)
+        print(k, mean_data_dict[k])
+        print(k, (mean_data_dict['DRL_TC'] - mean_data_dict[k]) / mean_data_dict[k])
+    # all_data_draw(data_dict, "EDF.png")
+
+    for day in range(1, 4):
+        data_dict = get_all_data(f"S_scenario_{day}")
+        all_data_draw(data_dict, f"S_scenario_{day}.png", day)
+        data_dict = cal_mean(data_dict)
+        print(data_dict)
+        print(day)
+        for k in data_dict: print(k, (data_dict['DRL_TC'] - data_dict[k]) / data_dict[k])
+
+
 
 
 
