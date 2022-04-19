@@ -183,10 +183,10 @@ def get_scenaro_score(test_day, solution_file, log_name, loc):
                            "datasets/background_traffic_traces/live_pubg.csv",
                            "datasets/background_traffic_traces/movie_on_demand.csv",
                            "datasets/background_traffic_traces/web.csv"]
-    block_files = [str(_) for _ in pathlib.Path(BLOCK_BASE).iterdir()]
+    block_files = sorted([str(_) for _ in pathlib.Path(BLOCK_BASE).iterdir()])
     solution = importlib.import_module(solution_file)
     my_solution = solution.MySolution()
-    for trace_name in os.listdir(NETWORK_BASE):
+    for trace_name in sorted(os.listdir(NETWORK_BASE)):
         trace_file = pathlib.Path(NETWORK_BASE + trace_name)
         for background_traffic in background_traffics:
             emulator = create_emulator(
@@ -258,32 +258,43 @@ if __name__ == "__main__":
     import importlib
 
     #EDF
-    EDF_NewReno = 'solutions.reno.DEF-NewReno'
-    EDF_Fast_TCP = 'solutions.Fast-TCP.DEF-Fast-TCP'
-    EDF_BBR = 'solutions.bbr.DEF-BBR'
+    EDF_NewReno = 'solutions.reno.EDF-NewReno'
+    EDF_Fast_TCP = 'solutions.Fast-TCP.EDF-Fast-TCP'
+    EDF_BBR = 'solutions.bbr.EDF-BBR'
     EDF_DRL_CC = 'solutions.dqn.EDF-DRL-CC'
     EDF_CUBIC = 'solutions.cubic.EDF-CUBIC'
     EDF_COPA = 'solutions.copa.EDF-COPA'
 
     # EDF_LIST = [EDF_NewReno, EDF_Fast_TCP, EDF_BBR, EDF_DRL_CC, EDF_CUBIC]
-    EDF_LIST = [EDF_COPA]
+    EDF_LIST = [EDF_BBR]
+    # get_scenarios(EDF_LIST, "E_scenario")
+    # for e in EDF_LIST:
+    #     get_score(e, 'EDF', get_file_name(e))
+
+    # file_name = get_file_name(EDF_BBR)
+    # get_scenaro_score(3, EDF_BBR, file_name, "E_scenario_3")
+
 
 
     # Hybrid
     EDF_NewReno = 'solutions.reno.EDF-NewReno'
     DTP_Fast_TCP = 'solutions.Fast-TCP.DTP-Fast-TCP'
     HPF_BBR = 'solutions.bbr.HPF-BBR'
-    DRL_TC = 'solutions.dqn.DRL-CC'
+    DRL_TC = 'solutions.dqn.DRL-TC'
 
     H_LIST = [EDF_NewReno, DTP_Fast_TCP, HPF_BBR, DRL_TC]
 
     HPF_DRL_CC = 'solutions.dqn.HPF-DRL-CC'
     DTP_DRL_CC = 'solutions.dqn.DTP-DRL-CC'
 
-    S_LIST = [DTP_DRL_CC]
 
-    get_scenarios(S_LIST, "S_scenario")
+    #
+    # get_scenarios(S_LIST, "S_scenario")
     # get_scenarios(H_LIST, "H_scenario")
+    # for h in H_LIST:
+    #     get_score(h, 'Hybrid', get_file_name(h))
+    S_LIST = [HPF_DRL_CC, DTP_DRL_CC]
+    get_scenarios(S_LIST, "S_scenario")
     for s in S_LIST:
         get_score(s, 'Select', get_file_name(s))
 
@@ -295,7 +306,6 @@ if __name__ == "__main__":
     # evaluation_begin = time.time()
     #
     # res = evaluation(log_file, solution_file)
-    #
     #
     # evaluation_end = time.time()
     # print('time used: ', evaluation_end - evaluation_begin, ' s')
