@@ -48,6 +48,9 @@ class MySolution(BlockSelection, Reno):
         # the number of lost packets received at the current moment
         self.instant_drop_nums = 0
 
+        self.counter = 0
+        self.trajectory_latency = 0
+
     def select_block(self, cur_time, block_queue):
         '''
         The alogrithm to select the block which will be sended in next.
@@ -97,6 +100,11 @@ class MySolution(BlockSelection, Reno):
             # initial parameters at a new moment
             self.last_cwnd = 0
             self.instant_drop_nums = 0
+
+        self.counter += 1
+        packet = event_info["packet_information_dict"]
+        latency = packet["Latency"] + packet["Send_delay"] + packet["Pacing_delay"]
+        self.trajectory_latency += latency
 
         # if packet is dropped
         if event_type == EVENT_TYPE_DROP:
@@ -152,3 +160,11 @@ class MySolution(BlockSelection, Reno):
             "cwnd" : self.cwnd,
             "send_rate" : self.send_rate,
         }
+
+    def get_trajectory_latency(self):
+
+        return self.trajectory_latency
+
+    def get_counter(self):
+
+        return self.counter

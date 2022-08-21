@@ -163,6 +163,9 @@ class RL(CongestionControl):
         self.random_counter = random_counter_init
         self.alpha = 1
 
+        self.count = 0
+        self.trajectory_latency = 0
+
         self.dqn = DQN(N_STATES=N_F,
                         N_ACTIONS=N_A,
                         LR=0.01,
@@ -198,6 +201,8 @@ class RL(CongestionControl):
         latency = packet["Latency"] + packet["Send_delay"] + packet["Pacing_delay"]
         packet_idx = packet["Offset"]
 
+        self.count += 1
+        self.trajectory_latency += latency
 
         if event_block_id in self.block_dict and packet_idx not in self.block_dict[event_block_id][1]:
             block_res_nums += block_split_nums - packet_idx
@@ -378,6 +383,14 @@ class RL(CongestionControl):
         #     self.ssthresh = max(int(self.cwnd * ((2 / 3) ** self.drop_nums)), 1)
         #     self.cwnd = self.ssthresh
         #     self.curr_state = self.states[1]
+
+    def get_trajectory_latency(self):
+
+        return self.trajectory_latency
+
+    def get_counter(self):
+
+        return self.count
 
 
 

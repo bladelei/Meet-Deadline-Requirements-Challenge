@@ -96,6 +96,9 @@ class MySolution(BlockSelection, Reno):
         # the value of sending rate
         self.send_rate = self.bbr_high_gain * self.cwnd / 0.002
 
+        self.counter = 0
+        self.trajectory_latency = 0
+
 
     def select_block(self, cur_time, block_queue):
         '''
@@ -239,6 +242,9 @@ class MySolution(BlockSelection, Reno):
             self.last_cwnd = 0
             self.instant_drop_nums = 0
 
+        self.counter += 1
+        self.trajectory_latency += packet_rtt
+
         # if packet is dropped
         # if event_type == EVENT_TYPE_DROP:
         #     # dropping more than one packet at a same time is considered one event of packet loss
@@ -324,3 +330,12 @@ class MySolution(BlockSelection, Reno):
             "cwnd": self.cwnd,
             "send_rate": self.pacing_rate,
         }
+
+
+    def get_trajectory_latency(self):
+
+        return self.trajectory_latency
+
+    def get_counter(self):
+
+        return self.counter

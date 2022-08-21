@@ -99,21 +99,22 @@ if __name__ == '__main__':
 
     # #Select
     data_dict = get_all_data("Select")
-    all_data_draw(data_dict, "Select.png")
-
-    mean_data_dict = cal_mean(data_dict)
-    print("mean_data_dict: ",mean_data_dict)
-    for k in mean_data_dict:
-        # print(k)
-        print(k, mean_data_dict[k])
-        print(k, (mean_data_dict['DRL_TC'] - mean_data_dict[k]) / mean_data_dict[k])
-    for day in range(1, 4):
-        data_dict = get_all_data(f"S_scenario_{day}")
-        all_data_draw(data_dict, f"S_scenario_{day}.png", day)
-        mean_data_dict = cal_mean(data_dict)
-        print(f"S_scenario_mean_data_dict_{day}: ", mean_data_dict)
-        for k in mean_data_dict:
-            print(k, (mean_data_dict['DRL_TC'] - mean_data_dict[k]) / mean_data_dict[k])
+    print(data_dict)
+    # all_data_draw(data_dict, "Select.png")
+    #
+    # mean_data_dict = cal_mean(data_dict)
+    # print("mean_data_dict: ",mean_data_dict)
+    # for k in mean_data_dict:
+    #     # print(k)
+    #     print(k, mean_data_dict[k])
+    #     print(k, (mean_data_dict['DRL_TC'] - mean_data_dict[k]) / mean_data_dict[k])
+    # for day in range(1, 4):
+    #     data_dict = get_all_data(f"S_scenario_{day}")
+    #     all_data_draw(data_dict, f"S_scenario_{day}.png", day)
+    #     mean_data_dict = cal_mean(data_dict)
+    #     print(f"S_scenario_mean_data_dict_{day}: ", mean_data_dict)
+    #     for k in mean_data_dict:
+    #         print(k, (mean_data_dict['DRL_TC'] - mean_data_dict[k]) / mean_data_dict[k])
 
 
     # #Hybrid

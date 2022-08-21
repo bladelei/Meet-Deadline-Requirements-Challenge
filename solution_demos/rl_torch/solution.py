@@ -238,8 +238,8 @@ class RL(CongestionControl):
             a = self.dqn.choose_action(s_array)
            
             # exploration
-            if random.random() < self.Lambda:
-                a = random.randint(0,2)
+            # if random.random() < self.Lambda:
+            #     a = random.randint(0,2)
 
             # Estimate the current available bandwidth 
             # and adjust the sending rate according to the output of torch model

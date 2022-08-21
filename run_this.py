@@ -63,7 +63,8 @@ if __name__ == '__main__':
     # The file path of packets' log
     log_packet_file = "output/packet_log/packet-0.log"
     # Select the solution file
-    solution_file = 'solution_demos.reno.solution'
+    # solution_file = 'solution_demos.reno.solution'
+    solution_file = 'solutions.reno.solution'
 
 
     # The first sender will use your solution, while the second sender will send the background traffic
